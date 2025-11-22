@@ -25,4 +25,4 @@ jobs:
       - name: Install dependencies
         run: pip install bs4
       - name: Run tests
-        run: python main.py
+        run: python genossenschaftswohung-website-tracker.py
