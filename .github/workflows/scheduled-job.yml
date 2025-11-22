@@ -8,7 +8,7 @@ on:
       - main
   schedule:
 #    change using crontab.guru
-    - cron: '00 01,13 * * *'
+    - cron: '*/5 * * * *'
 jobs:
   test:
     name: Run script

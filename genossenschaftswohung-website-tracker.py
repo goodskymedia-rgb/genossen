@@ -1,13 +1,14 @@
+import os
+
 import requests
 from bs4 import BeautifulSoup
 import hashlib
-import schedule
-import time
 import datetime
-from keep_alive import keep_alive  # Flask web server to keep Replit alive
 
 # === TELEGRAM CONFIGURATION ===
-TELEGRAM_TOKEN = ''  # Replace this with your actual token
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")  # Replace this with your actual token
+if TELEGRAM_TOKEN is None:
+    raise EnvironmentError("No TG Token Provided")
 CHAT_IDS = ['5230902484']  # Replace with your Telegram user ID
 
 # === APARTMENT SOURCES TO MONITOR ===
@@ -71,17 +72,7 @@ def check_websites():
     else:
         print(f"⏸️ Outside monitoring hours ({now}) UTC")
 
-# === KEEP THE BOT ALIVE (Replit) ===
-keep_alive()
+check_websites()
 
 # === OPTIONAL: Notify that bot started ===
 send_telegram_message("🚀 Apartment bot is running and watching listings!")
-
-# === SCHEDULE EVERY 5 MINUTES ===
-schedule.every(5).minutes.do(check_websites)
-
-print("🟢 Website monitor is running. Press Ctrl+C to stop.")
-
-while True:
-    schedule.run_pending()
-    time.sleep(1)
