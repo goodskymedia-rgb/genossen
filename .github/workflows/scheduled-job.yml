@@ -23,6 +23,6 @@ jobs:
         with:
           python-version: '3.8' #put your local version
       - name: Install dependencies
-        run: pip install #smth
+        run: pip install bs4
       - name: Run tests
         run: python main.py
