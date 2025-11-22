@@ -23,6 +23,6 @@ jobs:
         with:
           python-version: '3.8' #put your local version
       - name: Install dependencies
-        run: pip install bs4
+        run: pip install bs4 requests
       - name: Run tests
         run: python genossenschaftswohung-website-tracker.py
