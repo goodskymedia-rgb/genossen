@@ -23,6 +23,20 @@ jobs:
         with:
           python-version: '3.8' #put your local version
       - name: Install dependencies
-        run: pip install bs4 requests
+        run: pip install bs4 requests dotenv
+
+      - name: Restore previous state
+        uses: actions/cache@v4
+        with:
+          path: state/hashes.json
+          key: state-file
+          restore-keys: state-file
+
       - name: Run tests
-        run: python genossenschaftswohung-website-tracker.py
+        run:  echo $(python genossenschaftswohung-website-tracker.py --data $(jq -c . state/hashes.json)) > state/hashes.json
+
+      - name: Save updated state
+        uses: actions/cache@v4
+        with:
+          path: state/hashes.json
+          key: state-file

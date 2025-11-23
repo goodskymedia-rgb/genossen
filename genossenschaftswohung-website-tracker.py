@@ -1,10 +1,13 @@
+import argparse
+import hashlib
+import json
 import os
 
 import requests
 from bs4 import BeautifulSoup
-import hashlib
-import datetime
+from dotenv import load_dotenv
 
+load_dotenv()
 # === TELEGRAM CONFIGURATION ===
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")  # Replace this with your actual token
 if TELEGRAM_TOKEN is None:
@@ -27,7 +30,14 @@ urls = {
 }
 
 # === STORE PREVIOUS STATES ===
+arg_parser = argparse.ArgumentParser()
+arg_parser.add_argument("--data", required=True)
+args = arg_parser.parse_args()
+previous_state_hashes = json.loads(args.data)
 previous_hashes = {}
+if len(previous_state_hashes):
+    previous_hashes = previous_state_hashes
+
 
 # === TELEGRAM MESSAGE FUNCTION ===
 def send_telegram_message(message):
@@ -45,34 +55,29 @@ def get_content_hash(url):
         content = soup.get_text()
         return hashlib.md5(content.encode('utf-8')).hexdigest()
     except Exception as e:
-        print(f"[ERROR] Could not fetch {url}: {e}")
+        # print(f"[ERROR] Could not fetch {url}: {e}")
         return None
+
 
 # === CHECK WEBSITES FOR CHANGES ===
 def check_websites():
-    print(f"🔁 Checked at {datetime.datetime.utcnow().strftime('%H:%M:%S')} UTC")
-    now = datetime.datetime.now().time()
+    for name, url in urls.items():
+        current_hash = get_content_hash(url)
+        if current_hash is None:
+            continue
 
-    # Run only between 9:00–17:00 CEST = 7:00–15:00 UTC
-    if now >= datetime.time(7, 0) and now <= datetime.time(15, 0):
-        print(f"🕒 Inside monitoring hours ({now}) UTC")
-        for name, url in urls.items():
-            current_hash = get_content_hash(url)
-            if current_hash is None:
-                continue
+        if name in previous_hashes and previous_hashes[name] != current_hash:
+            message = f"🔄 {name} has been updated!\n{url}"
+            # print(f"✅ Change detected: {name}")
+            # send_telegram_message(message)
+        else:
+            # print(f"➖ No change: {name}")
+            pass
 
-            if name in previous_hashes and previous_hashes[name] != current_hash:
-                message = f"🔄 {name} has been updated!\n{url}"
-                print(f"✅ Change detected: {name}")
-                send_telegram_message(message)
-            else:
-                print(f"➖ No change: {name}")
+        previous_hashes[name] = current_hash
+    return previous_hashes
 
-            previous_hashes[name] = current_hash
-    else:
-        print(f"⏸️ Outside monitoring hours ({now}) UTC")
-
-check_websites()
+print(json.dumps(check_websites()))
 
 # === OPTIONAL: Notify that bot started ===
-send_telegram_message("🚀 Apartment bot is running and watching listings!")
+# send_telegram_message("🚀 Apartment bot is running and watching listings!")
