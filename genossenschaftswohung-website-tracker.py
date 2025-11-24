@@ -20,23 +20,18 @@ urls = {
     "Wohnen.at": "https://www.wohnen.at/angebot/unser-wohnungsangebot/",
     "EBG": "https://www.ebg-wohnen.at/immobilien/wohnung",
     "EGW": "https://www.egw.at/suche",
-    "ÖSW": "https://www.oesw.at/immobilienangebot/sofort-wohnen.html?financingType=2&rooms=3",
+    "OESW": "https://www.oesw.at/immobilienangebot/sofort-wohnen.html?financingType=2&rooms=3",
     "ÖVW": "https://www.oevw.at/suche",
-    "WienSüd": "https://www.wiensued.at/wohnen/?dev=&city=&search=&space-from=&space-to=&room-from=3&room-to=3&rent=1&state%5B%5D=sofort#search-results",
+    "WienSued": "https://www.wiensued.at/wohnen/?dev=&city=&search=&space-from=&space-to=&room-from=3&room-to=3&rent=1&state%5B%5D=sofort#search-results",
     "Heimbau": "https://www.heimbau.at/wiedervermietung",
     "NHG": "https://www.nhg.at/immobilienangebot/wohnungsangebot/",
-    "Gebös": "https://www.geboes.at/app/suche/ergebnisse?stocktype=Wohnung&state=Wien",
+    "Geboes": "https://www.geboes.at/app/suche/ergebnisse?stocktype=Wohnung&state=Wien",
     "Sofort-Wohnen": "https://sofort-wohnen.at/wohnungen?keywordSearch=wien&ordering=-date_posted&owning=true&renting=true&subsidized=true&private=true&page=1&pageSize=10"
 }
 
 # === STORE PREVIOUS STATES ===
-arg_parser = argparse.ArgumentParser()
-arg_parser.add_argument("--data", required=True)
-args = arg_parser.parse_args()
-previous_state_hashes = json.loads(args.data)
 previous_hashes = {}
-if len(previous_state_hashes):
-    previous_hashes = previous_state_hashes
+
 
 
 # === TELEGRAM MESSAGE FUNCTION ===
@@ -55,8 +50,14 @@ def get_content_hash(url):
         content = soup.get_text()
         return hashlib.md5(content.encode('utf-8')).hexdigest()
     except Exception as e:
-        # print(f"[ERROR] Could not fetch {url}: {e}")
+        print(f"[ERROR] Could not fetch {url}: {e}")
         return None
+
+with open("./state/hashes.json", "r") as input:
+    current_hashes = json.loads(input.read())
+#with open('./hashes.json', 'a') as output:
+    #json.dump(get_content_hash(), output)
+
 
 
 # === CHECK WEBSITES FOR CHANGES ===
@@ -68,16 +69,18 @@ def check_websites():
 
         if name in previous_hashes and previous_hashes[name] != current_hash:
             message = f"🔄 {name} has been updated!\n{url}"
-            # print(f"✅ Change detected: {name}")
-            # send_telegram_message(message)
+            print(f"✅ Change detected: {name}")
+            send_telegram_message(message)
         else:
-            # print(f"➖ No change: {name}")
+            print(f"➖ No change: {name}")
             pass
 
         previous_hashes[name] = current_hash
     return previous_hashes
 
-print(json.dumps(check_websites()))
+result = check_websites()
+with open("./state/hashes.json", "w") as output:
+    output.write(json.dumps(result))
 
 # === OPTIONAL: Notify that bot started ===
-# send_telegram_message("🚀 Apartment bot is running and watching listings!")
+send_telegram_message("🚀 Apartment bot is running and watching listings!")

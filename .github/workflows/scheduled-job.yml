@@ -33,7 +33,7 @@ jobs:
           restore-keys: state-file
 
       - name: Run tests
-        run:  echo $(python genossenschaftswohung-website-tracker.py --data $(jq -c . state/hashes.json)) > state/hashes.json
+        run:  python genossenschaftswohung-website-tracker.py
 
       - name: Save updated state
         uses: actions/cache@v4
