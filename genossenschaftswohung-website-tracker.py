@@ -83,4 +83,5 @@ with open("./state/hashes.json", "w") as output:
     output.write(json.dumps(result))
 
 # === OPTIONAL: Notify that bot started ===
-send_telegram_message("🚀 Apartment bot is running and watching listings!")
+
+#send_telegram_message("🚀 Apartment bot is running and watching listings!")
