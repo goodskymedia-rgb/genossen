@@ -1,0 +1,28 @@
+name: Scheduled job
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+#    change using crontab.guru
+    - cron: '00 01,13 * * *'
+jobs:
+  test:
+    name: Run script
+    runs-on: ubuntu-latest
+    env:
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@master
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.8' #put your local version
+      - name: Install dependencies
+        run: pip install #smth
+      - name: Run tests
+        run: python main.py
