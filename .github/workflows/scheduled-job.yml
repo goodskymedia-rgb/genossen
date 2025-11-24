@@ -8,7 +8,7 @@ on:
       - main
   schedule:
 #    change using crontab.guru
-    - cron: '00 01,13 * * *'
+    - cron: '*/5 * * * *'
 jobs:
   test:
     name: Run script
@@ -23,6 +23,20 @@ jobs:
         with:
           python-version: '3.8' #put your local version
       - name: Install dependencies
-        run: pip install #smth
+        run: pip install bs4 requests dotenv
+
+      - name: Restore previous state
+        uses: actions/cache@v4
+        with:
+          path: state/hashes.json
+          key: state-file
+          restore-keys: state-file
+
       - name: Run tests
-        run: python main.py
+        run:  python genossenschaftswohung-website-tracker.py
+
+      - name: Save updated state
+        uses: actions/cache@v4
+        with:
+          path: state/hashes.json
+          key: state-file
