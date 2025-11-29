@@ -24,7 +24,7 @@ urls = {
     "ÖVW": "https://www.oevw.at/suche",
     "WienSued": "https://www.wiensued.at/wohnen/?dev=&city=&search=&space-from=&space-to=&room-from=3&room-to=3&rent=1&state%5B%5D=sofort#search-results",
     "Heimbau": "https://www.heimbau.at/wiedervermietung",
-    "NHG": "https://www.nhg.at/immobilienangebot/wohnungsangebot/",
+    # "NHG": "https://www.nhg.at/immobilienangebot/wohnungsangebot/",
     "Geboes": "https://www.geboes.at/app/suche/ergebnisse?stocktype=Wohnung&state=Wien",
     "Sofort-Wohnen": "https://sofort-wohnen.at/wohnungen?keywordSearch=wien&ordering=-date_posted&owning=true&renting=true&subsidized=true&private=true&page=1&pageSize=10"
 }
