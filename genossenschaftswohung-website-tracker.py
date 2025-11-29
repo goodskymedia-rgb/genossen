@@ -55,6 +55,7 @@ def get_content_hash(url):
 
 with open("./state/hashes.json", "r") as input:
     current_hashes = json.loads(input.read())
+    print("current_hashes", current_hashes)
 #with open('./hashes.json', 'a') as output:
     #json.dump(get_content_hash(), output)
 
@@ -80,7 +81,9 @@ def check_websites():
 
 result = check_websites()
 with open("./state/hashes.json", "w") as output:
-    output.write(json.dumps(result))
+    new_hashes = json.dumps(result)
+    output.write(new_hashes)
+    print("new_hashes=", new_hashes)
 
 # === OPTIONAL: Notify that bot started ===
 
