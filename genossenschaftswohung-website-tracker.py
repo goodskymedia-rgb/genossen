@@ -9,7 +9,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 # === TELEGRAM CONFIGURATION ===
-TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")  # Replace this with your actual token
+#TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
+TELEGRAM_TOKEN = "7421213642:AAFAtuwvlwODCiGrzRhnsvC6V_lFPPEwz54" # Replace this with your actual token
 if TELEGRAM_TOKEN is None:
     raise EnvironmentError("No TG Token Provided")
 CHAT_IDS = ['5230902484']  # Replace with your Telegram user ID
@@ -30,8 +31,8 @@ urls = {
 }
 
 # === STORE PREVIOUS STATES ===
-previous_hashes = {}
-
+with open("./state/hashes.json", "r") as input:
+    previous_hashes = json.load(input)
 
 
 # === TELEGRAM MESSAGE FUNCTION ===
